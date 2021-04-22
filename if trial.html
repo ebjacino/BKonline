@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-audio-keyboard-response.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+var pre_if_trial = {
+    type: 'html-keyboard-response',
+    stimulus: 'The next trial is in a conditional statement. Press S to skip it, or V to view it.'
+}
+
+var if_trial = {
+    type: 'html-keyboard-response',
+    stimulus: 'You chose to view the trial. Press any key to continue.'
+}
+
+var if_node = {
+    timeline: [if_trial],
+    conditional_function: function(){
+        // get the data from the previous trial,
+        // and check which key was pressed
+        var data = jsPsych.data.get().last(1).values()[0];
+        console.log(data)
+        console.log(data.response)
+        console.log(jsPsych.pluginAPI.compareKeys(83, 's'))
+        if(jsPsych.pluginAPI.compareKeys(data.key_press, 's')){
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+var after_if_trial = {
+    type: 'html-keyboard-response',
+    stimulus: 'This is the trial after the conditional.'
+}
+
+jsPsych.init({
+    timeline: [pre_if_trial, if_node, after_if_trial],
+    on_finish: function(){jsPsych.data.displayData(); }
+});
+</script>
+  </html>
