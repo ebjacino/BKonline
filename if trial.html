@@ -27,9 +27,11 @@ var if_node = {
         // get the data from the previous trial,
         // and check which key was pressed
         var data = jsPsych.data.get().last(1).values()[0];
+        
         console.log(data)
         console.log(data.response)
         console.log(jsPsych.pluginAPI.compareKeys(83, 's'))
+
         if(jsPsych.pluginAPI.compareKeys(data.key_press, 's')){
             return false;
         } else {
