@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/bouba-kiki.js"></script>
+    <script src="jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-audio-keyboard-response.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+    <link href="rotate.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+
+/* create timeline */
+var timeline = [];
+
+var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+
+var stimulus = {
+    stimulus: 'PracSounds/1.wav',imageLeft:'PracImgs/1.png',imageRight:"PracImgs/2.png"
+}
+
+
+var trial = {
+    type: 'bouba-kiki',
+    upsound: 'sound/up2.wav',
+
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+    data: {
+      width: w,
+      height: h,
+      left_image: [jsPsych.timelineVariable('imageLeft')],
+      right_image: [jsPsych.timelineVariable('imageRight')],
+      
+    },
+    on_finish: function(data) {
+        // at the end of each trial, update the progress bar
+        // based on the current value and the proportion to update for each trial
+        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+        jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
+        
+        // End experiment and save the progress 
+         if(jsPsych.pluginAPI.compareKeys(data.response, "escape")){
+      jsPsych.endExperiment('The experiment was ended by pressing "escape".');
+         }
+    }
+  };
+
+
+  timeline.push(welcome);
+  timeline.push(trial);
+
+  jsPsych.init({
+      timeline: timeline,
+      preload_audio: ['PracSounds/1.wav'],
+      preload_images: ['PracImgs/1.png', 'PracImgs/2.png'],
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    });
+
+
+
+
+var PracArray = []
+var imageArr = ["1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png"]
+var soundArr = ["1.wav","2.wav","3.wav","4.wav","5.wav","6.wav","7.wav","8.wav"]
+
+var NumArr = [0,1,2,3,4,5,6,7];
+
+var leftButton = "f";
+var rightButton = "j";
+
+for (let i = 0; i < 4; i++){
+    var EightNums = jsPsych.randomization.sampleWithoutReplacement(NumArr, 8);
+    for (let j = 0; j < 4; j++){
+        num1 = EightNums[j*2]
+        num2 = EightNums[j*2+1]
+
+        if (Math.random() > 0.5){
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+        }
+        else{
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+        }
+    }
+}
+console.log(PracArray)
+
+
+
+
+  </script>
+</html>

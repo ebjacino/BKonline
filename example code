@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-audio-keyboard-response.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+  /* create timeline */
+timeline = [];
+continue_prac = false;
+
+
+var repeat_prac_conditional = {
+    conditional_function: function() {
+        var last_prac_trials = jsPsych.data.get().filter({trial_part : 'probe'}).last(practice_trial_info.length);
+        var n_correct = last_prac_trials.filter({accuracy: true}).count();
+        var prop_cor = n_correct/practice_trial_info.length;
+        if (prop_corr < 0.6) {
+            return true ; //if true, show message saying they'll repeat the practice
+            continue_prac = true;
+        } else {
+            continue_prac= false;
+            return false;
+        }
+    }
+};
+timeline.push(repeat_prac_conditional);
+
+var instructions_prac_loop = {
+    timeline: [instructions, prac_procedure, repeat_prac_conditional],
+    loop_function: function() {
+        if (repeat_prac == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+timeline.push(instructions_prac_loop);
+
+
+  </script>
+</html>
