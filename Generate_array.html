@@ -14,7 +14,7 @@
   <script>
 
 
-/* create timeline */
+/* //create timeline
 var timeline = [];
 
 var welcome = {
@@ -64,19 +64,20 @@ var trial = {
       on_finish: function(){
         jsPsych.data.displayData();
       }
-    });
+    }); 
+    */
 
 
 
 
 var PracArray = []
-var imageArr = ["1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png"]
-var soundArr = ["1.wav","2.wav","3.wav","4.wav","5.wav","6.wav","7.wav","8.wav"]
+var imageArr = ["PracImgs/1.png","PracImgs/2.png","PracImgs/3.png","PracImgs/4.png","PracImgs/5.png","PracImgs/6.png","PracImgs/7.png","PracImgs/8.png"];
+var soundArr = ["PracSounds/1.wav","PracSounds/2.wav","PracSounds/3.wav","PracSounds/4.wav","PracSounds/5.wav","PracSounds/6.wav","PracSounds/7.wav","PracSounds/8.wav"];
 
 var NumArr = [0,1,2,3,4,5,6,7];
 
-var leftButton = "f";
-var rightButton = "j";
+var leftButton = "shiftleft";
+var rightButton = "shiftright";
 
 for (let i = 0; i < 4; i++){
     var EightNums = jsPsych.randomization.sampleWithoutReplacement(NumArr, 8);
@@ -84,16 +85,63 @@ for (let i = 0; i < 4; i++){
         num1 = EightNums[j*2]
         num2 = EightNums[j*2+1]
 
-        if (Math.random() > 0.5){
+        //If it is less than 3 long just add randomly
+        if (PracArray.length < 3){
+          if (Math.random() > 0.5){
             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
-        }
-        else{
+          }
+          else{
             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+          }
         }
+        //If there are 3 or more entries already make sure the last 3 are not the same.
+        else{
+
+          //Get an array of the last 3 values
+          lastThree = PracArray.slice(-3);
+          lastThreeCorrect = [];
+          for (var k=0;k<3;k++){
+            lastThreeCorrect.push(lastThree[k].correct_response)
+          }
+
+          //Now check if they are all the same
+          all_equal = lastThreeCorrect.every( v => v === lastThreeCorrect[0] )
+
+          console.log(lastThreeCorrect)
+          console.log(all_equal)
+
+          //If they are all the same and right make the next one left 
+          if(all_equal && lastThreeCorrect[0] == rightButton){
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+            console.log("Forced Left")
+          }
+          //If they are all the same and left make the next one right 
+          else if(all_equal && lastThreeCorrect[0] == leftButton){
+            console.log("Forced Right")
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+          }
+          //Otherwise select randomly
+          else{
+            if (Math.random() > 0.5){
+              PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+            }
+            else{
+              PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+            }
+          }
+        }
+
+        
     }
 }
 console.log(PracArray)
 
+correctKeys = [];
+for (var i=0;i<PracArray.length;i++){
+  correctKeys.push(PracArray[i].correct_response)
+}
+
+console.log(correctKeys)
 
 
 

@@ -45,5 +45,25 @@ var instructions_prac_loop = {
 timeline.push(instructions_prac_loop);
 
 
+
+ /* test trials */
+    var test_stimuli = [
+      { stimulus: "img/blue.png",  correct_response: 'f'},
+      { stimulus: "img/orange.png",  correct_response: 'j'}
+    ]
+
+
+var trial_info = [
+    {
+        target: "bark",
+        probe: "bite",
+        correct_response: "j",
+        target_audio: "audio.mp3",
+        condition: "1",
+        task_part: "main"
+    }
+]
+
+
   </script>
 </html>
