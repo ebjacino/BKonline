@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych/plugins/bouba-kiki.js"></script>
+    <script src="jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-audio-keyboard-response.js"></script>
+    <script src="jspsych/plugins/jspsych-preload.js"></script>
+    <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css">
+    <link href="jspsych/css/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+var PracArray = []
+var imageArr = ["PracImgs/1.png","PracImgs/2.png","PracImgs/3.png","PracImgs/4.png","PracImgs/5.png","PracImgs/6.png","PracImgs/7.png","PracImgs/8.png"]
+var soundArr = ["PracSounds/1.wav","PracSounds/2.wav","PracSounds/3.wav","PracSounds/4.wav","PracSounds/5.wav","PracSounds/6.wav","PracSounds/7.wav","PracSounds/8.wav"]
+
+var NumArr = [0,1,2,3,4,5,6,7];
+
+var leftButton = "f";
+var rightButton = "j";
+
+for (let i = 0; i < 4; i++){
+    var EightNums = jsPsych.randomization.sampleWithoutReplacement(NumArr, 8);
+    for (let j = 0; j < 4; j++){
+        num1 = EightNums[j*2]
+        num2 = EightNums[j*2+1]
+
+        if (Math.random() > 0.5){
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+        }
+        else{
+            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+        }
+    }
+}
+console.log(PracArray)
+
+// manually preload these files, since not on standard jspsych preload
+var audio = ['sound/up2.wav'];
+  
+var preload = {
+    type: 'preload',
+    auto_preload: true,  // automatic preload of stimulus files
+    audio: audio  // manual preload of other files
+  };
+
+/* create timeline */
+var timeline = [];
+
+var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+
+var stimulus = [{
+    stimulus: 'PracSounds/1.wav',imageLeft:'PracImgs/1.png',imageRight:"PracImgs/2.png"
+}]
+
+var w = window.innerWidth;
+  var h = window.innerHeight;
+
+var trial = {
+    type: 'bouba-kiki',
+    upsound: 'sound/up2.wav',
+
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+    data: {
+      width: w,
+      height: h,
+      left_image: [jsPsych.timelineVariable('imageLeft')],
+      right_image: [jsPsych.timelineVariable('imageRight')],
+      correct_response: jsPsych.timelineVariable('correct_response'),
+    },
+    on_finish: function(data){
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response)
+        console.log(data.correct_response);
+    }
+  };
+
+  var if_trial = {
+    timeline: [trial],
+    conditional_function: function(){
+        // get the data from the previous trial,
+        // and check which key was pressed
+        var count = jsPsych.data.get().last(4).filter({correct: true}).count();
+        console.log(count);
+        if(count >= 4){
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+
+  var test_procedure = {
+    timeline: [trial],
+    timeline_variables: stimulus
+    //timeline_variables: PracArray.slice(0,4),
+  };
+
+  var if_test_procedure = {
+    timeline: [if_trial],
+    timeline_variables: PracArray.slice(4),
+  };
+
+  var screen_size = {
+    type: 'html-button-response',
+    stimulus: '<p style="color: red; font-size: 20px"> Width: ' + w +' Height: ' + h  +'</p>',
+    choices: ['Continue'],
+  };
+
+  console.log(w, h)
+
+
+  timeline.push(preload);
+  timeline.push(welcome);
+  timeline.push(test_procedure);
+  timeline.push(if_test_procedure);
+
+
+  jsPsych.init({
+      timeline: timeline,
+      //preload_audio: ['sound/up2.wav',"PracSounds/1.wav","PracSounds/2.wav","PracSounds/3.wav","PracSounds/4.wav","PracSounds/5.wav","PracSounds/6.wav","PracSounds/7.wav","PracSounds/8.wav"],
+      //preload_images: ['PracImgs/1.png', 'PracImgs/2.png','PracImgs/3.png', 'PracImgs/4.png','PracImgs/5.png', 'PracImgs/6.png','PracImgs/7.png', 'PracImgs/8.png'],
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    });
+
+  </script>
+</html>
