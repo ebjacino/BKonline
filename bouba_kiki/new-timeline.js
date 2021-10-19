@@ -73,20 +73,47 @@ function new_timeline() {
   
   /* create timeline */
   
-  var position_setup = {
-    type: "html-keyboard-response",
-    stimulus: "Please make sure you are sitting so that your eyes are about 16 inches away from your computer screen. Press any key to continue."
-  };
+  var hello = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>Please make sure you are sitting so that your eyes are about 16 inches away from your computer screen.</p>',
+  choices: ['Continue'],
+};
+timeline.push(hello);
+
+  var hello2 = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>Using headphones are reccomended for this experiment. Put the volume at a comfortable volume, about 40-50%.</p>',
+  choices: ['Continue'],
+};
+timeline.push(hello2);
+
+  var hello3 = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>You will hear TWO sounds. The first is to alert you that the trial is beginning. The second is the TARGET sound. PAY ATTENTION TO THE SECOND SOUND IN EACH TRIAL.</p>',
+  choices: ['Continue'],
+};
+timeline.push(hello3);
+
+  var hello4 = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>You will see 2 images on the screen. When you hear the TARGET SOUND, pick which image best matches the sound. <p> First let’s practice with animal shapes and sounds. Pick the key on the same side as the matching animal. </p>Which animal made the sound? <p>Use the Z button to pick the left animal and the M button to pick the right animal.</p>',
+  choices: ['Continue'],
+};
+timeline.push(hello4);
+
+  var hello5 = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>Ready to begin? Press Continue to begin the practice trials.</p>',
+  choices: ['Continue'],
+};
+timeline.push(hello5);
   
-  var audio_setup = {
-    type: "html-keyboard-response",
-    stimulus: "Using headphones are reccomended for this experiment. Put the volume at a comfortable volume, about 40-50%. There will be a noise while stimuli arrive on the screen to let you know the trial is starting. Press any key to continue."
-  };
+//  var position_setup = {
+//    type: "html-keyboard-response",
+//    stimulus: "Please make sure you are sitting so that your eyes are about 16 inches away from your computer //screen. Press any key to continue."
+//  };
   
-  var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "In this experiment, you will see 2 images on the screen. You will hear a sound, then you will pick which image best matches the sound. First you will complete practice trials so you can learn which buttons to press. In the practice trials, you will see 2 animals, then hear an animal sound. Which animal made the sound? Use the Z button to pick the left animal and the M button to pick the right animal. If you take too long, the trial will end and you will start the next trial. Press any key to start the practice trials. "
-      };
+
   
   var stimulus = [{
       stimulus: 'PracSounds/1.wav',imageLeft:'PracImgs/1.png',imageRight:"PracImgs/2.png"
@@ -150,9 +177,9 @@ function new_timeline() {
 
   
     timeline.push(preload);
-    timeline.push(position_setup);
-    timeline.push(audio_setup)
-    timeline.push(welcome);
+    //timeline.push(position_setup);
+   
+    
     timeline.push(Prac_test_procedure);
     timeline.push(Prac_if_test_procedure);
 
@@ -161,7 +188,7 @@ function new_timeline() {
 
   var instruction = {
     type: 'html-button-response',
-    stimulus: '<div style="max-width:600px;"><p>Instruction:</p> <p>Great job, you have finished the practice trials! Now, you will see 2 images on the screen. You will hear a sound, then you will pick which image best matches the sound. For example, you may see two wiggly shapes and hear the sound "baba". Which wiggly shape matches the sound? Use the Z button to pick the left shape and the M button to pick the right shape. If you take too long, the trial will end and you will start the next trial. Press "esc" to leave the study at any time. </p></div>',
+    stimulus: '<div style="max-width:600px;"><p>Instruction:</p> <p>Great job, you have finished the practice trials! Now for the experiment. <p> You will now see 2 abstract objects and hear an abstract sound. You need to pick the object that best matches the sound.Press the key on the same side as the matching shape. </p> <p>Press Z for shapes on the left and M for shapes on the right. </p> <p>If you take too long, the trial will end and you will start the next trial. Press "esc" to leave the study at any time. </p></div>',
     choices: ['Continue'],
    on_start: function() {
         // set progress bar to 0 at the start of experiment

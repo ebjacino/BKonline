@@ -50,7 +50,7 @@ elts <- join(
         validate = function(answer, ...) {
           if (answer == "")
             "Participant ID cannot be blank."
-          else if (!(str_detect(answer,"^[a-zA-Z]{2}[0-9]{3}$")))
+          else if (!(str_detect(answer,"^[a-zA-Z]{3}[0-9]{3}$")))
             "The ID must be 2 letters followed by 3 numbers."
           else TRUE
         }

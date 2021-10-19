@@ -5,7 +5,7 @@ rds_files <- list.files("~/ShinyApps/bouba_kiki/output/results",
 #lists rds files
 rds_files
 #change [#] to pick which one to read
-data <- readRDS(rds_files[64])
+data <- readRDS(rds_files[2])
 
 #assign ID
 participant_ID <- data$results$`sp_id`[[1]]
