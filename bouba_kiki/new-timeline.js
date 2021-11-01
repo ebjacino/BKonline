@@ -11,13 +11,14 @@ function new_timeline() {
   var leftButton = "z";
   var rightButton = "m";
   
+  //every time outside loop runs, inside loop runs 4 times. 
   for (let i = 0; i < 4; i++){
       var EightNums = jsPsych.randomization.sampleWithoutReplacement(NumArr, 8);
       for (let j = 0; j < 4; j++){
-          num1 = EightNums[j*2]
-          num2 = EightNums[j*2+1]
+          num1 = EightNums[j*2] //first of the pair. the [j*2]th position in the suffled numarr
+          num2 = EightNums[j*2+1] //second of the pair
   
-          //If it is less than 3 long just add randomly
+          //If it is less than 3 long just add randomly. 
         if (PracArray.length < 3){
           if (Math.random() > 0.5){
             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})

@@ -1,0 +1,22 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red205\green173\blue106;\red23\green23\blue23;}
+{\*\expandedcolortbl;;\cssrgb\c84314\c72941\c49020;\cssrgb\c11765\c11765\c11765;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sl360\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2   var audio_setup = \{\
+    type: "html-keyboard-response",\
+    stimulus: "Using headphones are reccomended for this experiment. Put the volume at a comfortable volume, about 40-50%. There will be a noise while stimuli arrive on the screen to let you know the trial is starting. Press any key to continue."\
+  \};\
+\
+  var welcome = \{\
+        type: "html-keyboard-response",\
+        stimulus: "In this experiment, you will see 2 images on the screen. You will hear a sound, then you will pick which image best matches the sound. First you will complete practice trials so you can learn which buttons to press. In the practice trials, you will see 2 animals, then hear an animal sound. Which animal made the sound? Use the Z button to pick the left animal and the M button to pick the right animal. If you take too long, the trial will end and you will start the next trial. Press any key to start the practice trials. "\
+      \};\
+\
+ timeline.push(audio_setup)\
+\
+timeline.push(welcome);}
