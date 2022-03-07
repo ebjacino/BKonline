@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="jspsych-6.3.0/jspsych.js"></script>
+    <script src="jspsych-6.3.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.3.0/plugins/bouba-kiki.js"></script>
+    <script src="jspsych-6.3.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="jspsych-6.3.0/plugins/jspsych-audio-keyboard-response.js"></script>
+    <link href="jspsych-6.3.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <link href="rotate.css" rel="stylesheet" type="text/css">
+  </head>
+  <body></body>
+  <script>
+
+
+/* //create timeline
+var timeline = [];
+
+var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+
+var stimulus = {
+    stimulus: 'PracSounds/1.wav',imageLeft:'PracImgs/1.png',imageRight:"PracImgs/2.png"
+}
+
+
+var trial = {
+    type: 'bouba-kiki',
+    upsound: 'sound/up2.wav',
+
+    stimulus: jsPsych.timelineVariable('stimulus'),
+    image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+    data: {
+      width: w,
+      height: h,
+      left_image: [jsPsych.timelineVariable('imageLeft')],
+      right_image: [jsPsych.timelineVariable('imageRight')],
+      
+    },
+    on_finish: function(data) {
+        // at the end of each trial, update the progress bar
+        // based on the current value and the proportion to update for each trial
+        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+        jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
+        
+        // End experiment and save the progress 
+         if(jsPsych.pluginAPI.compareKeys(data.response, "escape")){
+      jsPsych.endExperiment('The experiment was ended by pressing "escape".');
+         }
+    }
+  };
+
+
+  timeline.push(welcome);
+  timeline.push(trial);
+
+  jsPsych.init({
+      timeline: timeline,
+      preload_audio: ['PracSounds/1.wav'],
+      preload_images: ['PracImgs/1.png', 'PracImgs/2.png'],
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    }); 
+    */
+
+
+
+
+var PracArray = []
+var combo_array = []
+var trial_block = []
+var soundArr = ["sound/dada.wav","sound/kaka.wav","sound/lili.wav","ssound/sasa.wav","sound/titi.wav","sound/didi.wav","sound/mama.wav","sound/sisi.wav","sound/zaza.wav","sound/fafa.wav",
+                "sound/kiki.wav","sound/mimi.wav","sound/tata.wav","sound/zizi.wav","sound/fifi.wav","sound/lala.wav"];
+var boubaArr = ["img/bouba_7_L.png","img/bouba_7_S.png"];
+var boubaArr_R= ["img/bouba_7_L_R.png","img/bouba_7_S_R.png"];
+var kikiArr = ["img/kiki_7_L.png","img/kiki_7_S.png"];
+var kikiArr_R = ["img/kiki_7_L_R.png","img/kiki_7_S_R.png"];
+
+for (let i = 0; i<boubaArr.length; i++){
+    var boubaArr = jsPsych.randomization.sampleWithoutReplacement(boubaArr, boubaArr.length);
+      for (let j = 0; j<kikiArr.length; j++){
+           combo_array.push([boubaArr[i],kikiArr[j]])
+           combo_array.push([boubaArr_R[i],kikiArr_R[j]])
+           combo_array.push([kikiArr[j], boubaArr[i]])
+           combo_array.push([kikiArr_R[j], boubaArr_R[i]])
+      }
+};
+
+console.log(combo_array);
+for (let i = 0; i<combo_array.length; i++){
+    var combo_array = jsPsych.randomization.sampleWithoutReplacement(combo_array, combo_array.length);
+    var soundArr = jsPsych.randomization.sampleWithoutReplacement(soundArr, soundArr.length);
+    trial_block.push([soundArr[i], combo_array[i]]);
+}
+
+console.log(trial_block);
+
+
+
+
+
+
+
+// var NumArr = [0,1,2,3,4,5,6,7];
+
+// var leftButton = "z";
+// var rightButton = "m";
+
+// for (let i = 0; i < 4; i++){
+//     var EightNums = jsPsych.randomization.sampleWithoutReplacement(NumArr, 8);
+//     for (let j = 0; j < 4; j++){
+//         num1 = EightNums[j*2]
+//         num2 = EightNums[j*2+1]
+
+//         //If it is less than 3 long just add randomly
+//         if (PracArray.length < 3){
+//           if (Math.random() > 0.5){
+//             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+//           }
+//           else{
+//             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+//           }
+//         }
+//         //If there are 3 or more entries already make sure the last 3 are not the same.
+//         else{
+
+//           //Get an array of the last 3 values
+//           lastThree = PracArray.slice(-3);
+//           lastThreeCorrect = [];
+//           for (var k=0;k<3;k++){
+//             lastThreeCorrect.push(lastThree[k].correct_response)
+//           }
+
+//           //Now check if they are all the same
+//           all_equal = lastThreeCorrect.every( v => v === lastThreeCorrect[0] )
+
+//           console.log(lastThreeCorrect)
+//           console.log(all_equal)
+
+//           //If they are all the same and right make the next one left 
+//           if(all_equal && lastThreeCorrect[0] == rightButton){
+//             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+//             console.log("Forced Left")
+//           }
+//           //If they are all the same and left make the next one right 
+//           else if(all_equal && lastThreeCorrect[0] == leftButton){
+//             console.log("Forced Right")
+//             PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+//           }
+//           //Otherwise select randomly
+//           else{
+//             if (Math.random() > 0.5){
+//               PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+//             }
+//             else{
+//               PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+//             }
+//           }
+//         }
+
+        
+//     }
+// }
+// console.log(PracArray)
+
+// correctKeys = [];
+// for (var i=0;i<PracArray.length;i++){
+//   correctKeys.push(PracArray[i].correct_response)
+// }
+
+// console.log(correctKeys)
+
+
+
+  </script>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My experiment</title>
+        <script src="jspsych-6.3.1/jspsych.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-image-keyboard-response.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-video-keyboard-response.js"></script>
+        <script src="jspsych-6.3.1/plugins/jspsych-html-button-response.js"></script>
+
+        <script src="jspsych-6.3.1/plugins/jspsych-preload.js"></script>
+        <link href="jspsych-6.3.1/css/jspsych.css" rel="stylesheet" type="text/css">
+    </head>
+    <body></body>
+    <script>
+
+    /* create timeline */
+    var timeline = [];
+
+    var LGPracArray = [];
+    var soundArr = ["sound/dada.wav","sound/kaka.wav","sound/lili.wav","ssound/sasa.wav","sound/titi.wav","sound/didi.wav","sound/mama.wav","sound/sisi.wav","sound/zaza.wav","sound/fafa.wav",
+                    "sound/kiki.wav","sound/mimi.wav","sound/tata.wav","sound/zizi.wav","sound/fifi.wav","sound/lala.wav"];
+    var imageArr = ["img/bouba_7_L_R.png","img/bouba_7_L.png","img/bouba_7_S_R.png","img/bouba_7_S.png","img/kiki_7_L_R.png","img/kiki_7_L.png","img/kiki_7_S_R.png","img/kiki_7_S.png"];
+    
+
+    console.log(sides)
+    //while loop creates a shuffled array, then checks it to see if there are 3 in a row. if there are, it runs again until it can make one that does not have 3 in a row
+    var reading_frame = 4
+    var three_in_row = true
+
+    while (three_in_row) {
+        sides = jsPsych.randomization.sampleWithoutReplacement(sides, sides.length);
+        console.log(sides)
+
+        three_in_row = false;
+
+        for(i = 0; i <= sides.length-reading_frame; i++){
+            to_read = sides.slice(i,i+reading_frame);
+            all_equal = to_read.every( v => v.includes("LC")) || to_read.every( v => v.includes("RC"));
+            
+            //console.log(to_read)
+            //only if it has seen 3 in a row will this make three_in_row equal true, which makes the loop run again until it gets it right
+            if(all_equal){
+                three_in_row = true;
+            }
+        }
+    }
+
+    console.log("\n We're done!")
+    console.log(sides)
+
+    var leftButton = "z";
+    var rightButton = "m";
+
+//ADD STIM TO PRACTICE ARRAY
+    for(let i = 0; i < sides.length; i++){
+        string_i = sides[i];
+        if (string_i.includes("LC")){ //item i in sides includes(LC)){
+            LGPracArray.push({ stimulus: sides[i], correct_response:leftButton}) //item i in sides, correct_response:leftButton})
+          }
+          else{
+            LGPracArray.push({ stimulus: sides[i], correct_response:rightButton})//item i in sides, correct_response:rightButton})
+          }
+        }
+    
+    console.log(LGPracArray);
+
+//PRELOAD
+    var preload = {
+      type: 'preload',
+      auto_preload: true,  // automatic preload of stimulus files
+    };
+    timeline.push(preload);
+
+//INSTRUCTIONS
+//WELCOME
+var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the next experiment. Press any key to begin.",
+      on_start: function() {
+        // set progress bar to 0 at the start of experiment
+       jsPsych.setProgressBar(0);
+        }
+    };
+    timeline.push(welcome);
+
+//VIDEO
+// var LGvideo = {
+//     type: "video-keyboard-response",
+//     stimulus: [
+//     'vid/LGvideo.mp4'
+//   ],
+//   choices: "NO_KEYS",
+//   width: 600,
+//   height: 400,
+//   trial_ends_after_video: true
+// };
+// timeline.push(LGvideo);
+
+//FIXATION AND CONDITIONAL FIXATION
+    var LGfixation = {
+      type: 'image-keyboard-response',
+      stimulus: 'img/fixation.png',
+    choices: "NO_KEYS",
+    trial_duration: 1000
+    };
+
+    var if_LGfixation = {
+      timeline: [LGfixation],
+      conditional_function: function(){
+          // get the data from the previous trial,
+          // and check which key was pressed
+          var count = jsPsych.data.get().filter({trial_id: 'trial'}).last(4).filter({correct: true}).count();
+          if(count >= 4){
+              return false;
+          } else {
+              return true;
+          }
+        }
+    }
+    
+    var stimulus = [{
+    stimulus: "Prac_LG/LC/41.png"}
+    ]
+
+//PRAC TRIAL AND CONDITIONAL PRAC TRIAL
+    var LGPractest = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['z','m'],
+      trial_duration: 10000,
+      data: {
+        task: 'response',
+        image: [jsPsych.timelineVariable('stimulus')],
+        correct_response: jsPsych.timelineVariable('correct_response'),
+        trial_id: 'trial'
+      },
+      on_finish: function(data){
+          data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response)
+          console.log(data.correct_response);
+    }
+}
+
+    var LGPracit_trial = {
+      timeline: [LGPractest],
+      conditional_function: function(){
+          // get the data from the previous trial,
+          // and check which key was pressed
+          var count = jsPsych.data.get().filter({trial_id: 'trial'}).last(4).filter({correct: true}).count();
+          console.log(count);
+          if(count >= 4){
+              return false;
+          } else {
+              return true;
+          }
+      }
+  }
+
+  var LGPrac_test_procedure = {
+      timeline: [LGfixation, LGPractest],
+      timeline_variables: LGPracArray.slice(0,4),
+    };
+  
+    var LGPrac_if_test_procedure = {
+      timeline: [if_LGfixation, LGPracit_trial],
+      timeline_variables: LGPracArray.slice(4),
+    };
+
+    timeline.push(LGPrac_test_procedure);
+    timeline.push(LGPrac_if_test_procedure);
+
+//TRANSITION TO EXPERIMENT TRIALS
+    var welcome2 = {
+      type: "html-keyboard-response",
+      stimulus: "You are done with the practice. Press space."
+    };
+    timeline.push(welcome2);
+
+    var TestArray = [];
+    var sides2 = ["img/Catch/G-113.png","img/Catch/G-131.png","img/Catch/G-224.png","img/Catch/G-242.png","img/Catch/G-313.png","img/Catch/G-331.png","img/Catch/G-434.png",
+    "img/Catch/G-443.png","img/Catch/L-112.png","img/Catch/L-121.png","img/Catch/L-212.png","img/Catch/L-221.png","img/Catch/L-334.png","img/Catch/L-343.png","img/Catch/L-434.png",
+    "img/Catch/L-443.png",
+    "img/Test/3-432.png","img/Test/3-423.png","img/Test/3-341.png","img/Test/3-241.png","img/Test/3-314.png","img/Test/3-214.png","img/Test/3-132.png",
+    "img/Test/2-432.png","img/Test/3-123.png","img/Test/2-423.png","img/Test/2-341.png","img/Test/2-314.png","img/Test/2-241.png","img/Test/2-214.png",
+    "img/Test/2-132.png","img/Test/2-123.png","img/Test/1-432.png","img/Test/1-423.png","img/Test/1-341.png","img/Test/1-314.png","img/Test/1-241.png",
+    "img/Test/1-214.png","img/Test/1-132.png","img/Test/1-123.png"];
+    
+
+    console.log(sides2)
+    //while loop creates a shuffled array, then checks it to see if there are 3 in a row. if there are, it runs again until it can make one that does not have 3 in a row
+    var reading_frame2 = 3
+    var two_in_row = true
+
+    while (two_in_row) {
+        sides2 = jsPsych.randomization.sampleWithoutReplacement(sides2, sides2.length);
+        console.log(sides2)
+
+        two_in_row = false;
+
+        for(i = 0; i <= sides2.length-reading_frame2; i++){
+            to_read = sides2.slice(i,i+reading_frame2);
+            all_equal = to_read.every( v => v.includes("Catch"));
+            
+            //only if it has seen 3 in a row will this make three_in_row equal true, which makes the loop run again until it gets it right
+            if(all_equal){
+                two_in_row = true;
+            }
+        }
+    }
+
+    console.log("\n We're done!")
+    console.log(sides2)
+
+    var leftButton = "z";
+    var rightButton = "m";
+
+//ADD STIM TO TEST ARRAY
+    for(let i = 0; i < sides2.length; i++){
+        string_i = sides2[i];
+        if (string_i.includes("LC")){ //item i in sides2 includes(LC)){
+            TestArray.push({ stimulus: sides2[i]}) //item i in sides2
+          }
+          else{
+            TestArray.push({ stimulus: sides2[i]})//item i in sides2
+          }
+        }
+    
+    console.log(TestArray);
+
+//PRESENT STIM FROM TEST ARRAY
+    var preload = {
+      type: 'preload',
+      auto_preload: true,  // automatic preload of stimulus files
+    };
+    timeline.push(preload);
+    console.log("preloaded");
+
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "Welcome to the next experiment. Press any key to begin.",
+      on_start: function() {
+        // set progress bar to 0 at the start of experiment
+       jsPsych.setProgressBar(0);
+        }
+    };
+    
+
+    timeline.push(welcome);
+
+
+    var stimulus = [{
+    stimulus: "Img/Catch/G-113.png"}
+    ];
+
+//TRIAL
+    var LGfixation = {
+        type: 'image-keyboard-response',
+      stimulus: 'img/fixation.png',
+    choices: "NO_KEYS",
+    trial_duration: 1000
+    };
+
+    var n_trials = 40;
+
+    var LGtest = {
+      type: "image-keyboard-response",
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['z','m'],
+      trial_duration: 10000,
+      data: {
+        task: 'response',
+        image: [jsPsych.timelineVariable('stimulus')],
+      },
+      on_finish: function() {
+        // at the end of each trial, update the progress bar
+        // based on the current value and the proportion to update for each trial
+        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+        jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
+        }
+    };
+
+    
+
+    var LGtest_procedure = {
+      timeline: [LGfixation, LGtest],
+      timeline_variables: TestArray,
+    };
+
+    timeline.push(LGtest_procedure);
+
+
+
+
+    jsPsych.init({
+      timeline: timeline,
+      show_progress_bar: true,
+      auto_update_progress_bar: false,
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+
+
+    </script>
+</html>
