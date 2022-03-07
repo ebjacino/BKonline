@@ -73,31 +73,114 @@ var trial = {
 var PracArray = []
 var combo_array = []
 var trial_block = []
-var soundArr = ["sound/dada.wav","sound/kaka.wav","sound/lili.wav","ssound/sasa.wav","sound/titi.wav","sound/didi.wav","sound/mama.wav","sound/sisi.wav","sound/zaza.wav","sound/fafa.wav",
-                "sound/kiki.wav","sound/mimi.wav","sound/tata.wav","sound/zizi.wav","sound/fifi.wav","sound/lala.wav"];
-var boubaArr = ["img/bouba_7_L.png","img/bouba_7_S.png"];
-var boubaArr_R= ["img/bouba_7_L_R.png","img/bouba_7_S_R.png"];
-var kikiArr = ["img/kiki_7_L.png","img/kiki_7_S.png"];
-var kikiArr_R = ["img/kiki_7_L_R.png","img/kiki_7_S_R.png"];
+var soundArr = ["sound/lili.wav","sound/titi.wav","sound/didi.wav","sound/sisi.wav","sound/kiki.wav","sound/mimi.wav","sound/zizi.wav","sound/fifi.wav","sound/DADA.wav","sound/KAKA.wav","sound/SASA.wav","sound/MAMA.wav","sound/ZAZA.wav","sound/FAFA.wav","sound/LALA.wav","sound/TATA.wav"];
+//var soundArr_i = ["sound/lili.wav","sound/titi.wav","sound/didi.wav","sound/sisi.wav","sound/kiki.wav","sound/mimi.wav","sound/zizi.wav","sound/fifi.wav"];
+//var soundArr_a = ["sound/dada.wav","sound/kaka.wav","sound/sasa.wav","sound/mama.wav","sound/zaza.wav","sound/fafa.wav","sound/lala.wav","sound/tata.wav"];
 
-for (let i = 0; i<boubaArr.length; i++){
-    var boubaArr = jsPsych.randomization.sampleWithoutReplacement(boubaArr, boubaArr.length);
-      for (let j = 0; j<kikiArr.length; j++){
-           combo_array.push([boubaArr[i],kikiArr[j]])
-           combo_array.push([boubaArr_R[i],kikiArr_R[j]])
-           combo_array.push([kikiArr[j], boubaArr[i]])
-           combo_array.push([kikiArr_R[j], boubaArr_R[i]])
+var boubaArr_L = ["img/bouba_7_L.png","img/bouba_7_L_R.png"];
+var boubaArr_S = ["img/bouba_7_S_R.png","img/bouba_7_S.png"];
+var kikiArr_L = ["img/kiki_7_L.png","img/kiki_7_L_R.png"];
+var kikiArr_S = ["img/kiki_7_S_R.png","img/kiki_7_S.png"];
+
+for (let i = 0; i<boubaArr_L.length; i++){
+    var boubaArr_L = jsPsych.randomization.sampleWithoutReplacement(boubaArr_L, boubaArr_L.length);
+      for (let j = 0; j<kikiArr_L.length; j++){
+           combo_array.push([boubaArr_L[i],kikiArr_L[j]])
+           combo_array.push([boubaArr_S[i],kikiArr_S[j]])
+           combo_array.push([kikiArr_L[j], boubaArr_L[i]])
+           combo_array.push([kikiArr_S[j], boubaArr_S[i]])
       }
 };
 
 console.log(combo_array);
-for (let i = 0; i<combo_array.length; i++){
-    var combo_array = jsPsych.randomization.sampleWithoutReplacement(combo_array, combo_array.length);
+
+    //while loop creates a shuffled array, then checks it to see if there are 3 in a row. if there are, it runs again until it can make one that does not have 3 in a row
+var reading_frame = 3
+var three_in_row = true
+
+while (three_in_row) {
     var soundArr = jsPsych.randomization.sampleWithoutReplacement(soundArr, soundArr.length);
-    trial_block.push([soundArr[i], combo_array[i]]);
+    //var soundArr_a = jsPsych.randomization.sampleWithoutReplacement(soundArr_a, soundArr_a.length);    
+
+    three_in_row = false;
+
+    for(i = 0; i <= soundArr.length-reading_frame; i++){
+        to_read = soundArr.slice(i,i+reading_frame);
+        all_equal = to_read.every( v => v.includes("A")) || to_read.every( v => v.includes("i"));
+            
+            //console.log(to_read)
+            //only if it has seen 2 in a row will this make three_in_row equal true, which makes the loop run again until it gets it right
+        if(all_equal){
+            three_in_row = true;
+            }
+        }
 }
 
+    console.log("\n We're done!")
+    console.log(soundArr)
+
+
+var bouba_reading_frame = 3
+var bouba_three_in_row = true
+
+while (bouba_three_in_row) {
+    var combo_array = jsPsych.randomization.sampleWithoutReplacement(combo_array, combo_array.length);
+
+    bouba_three_in_row = false;
+
+    //will return the 0th iten in each inner array, then check to see if it has 3 equal in a row
+    for(i = 0; i <= combo_array.length-reading_frame; i++){
+        to_read = combo_array.slice(i,i+reading_frame).map(function(x) {
+                                                                        return x[0];
+                                                                        });
+        all_equal = to_read.every( v => v.includes("bouba")) || to_read.every( v => v.includes("kiki"));
+            
+            console.log(to_read)
+            //only if it has seen 2 in a row will this make three_in_row equal true, which makes the loop run again until it gets it right
+        if(all_equal){
+            bouba_three_in_row = true;
+            }
+        }
+};    
+
+for (let i = 0; i<combo_array.length; i++){
+    trial_block.push([soundArr[i], combo_array[i][0], combo_array[i][1]]);
+};
+
 console.log(trial_block);
+console.log(combo_array);
+console.log(i)
+console.log(combo_array[i])
+console.log(combo_array[i][0]);
+console.log(combo_array[i][1]);
+
+//READY UP
+// var ready = {
+//   type: "html-button-response",
+//   stimulus: '<div style="max-width:600px;"><p>Ready to begin? Press Continue to begin the trials.</p>',
+//   choices: ['Continue'],
+// };
+// timeline.push(ready);
+
+// var trial = {
+//       type: 'bouba-kiki',
+//       upsound: 'sound/up2.wav',
+  
+//       stimulus: jsPsych.timelineVariable('stimulus'),
+//       image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+//       data: {
+//         width: w,
+//         height: h,
+//         left_image: [jsPsych.timelineVariable('imageLeft')],
+//         right_image: [jsPsych.timelineVariable('imageRight')],
+//         correct_response: jsPsych.timelineVariable('correct_response'),
+//       }
+//     }
+
+// var test_procedure = {
+//       timeline: [trial],
+//       timeline_variables: trial_block,
+//     };
 
 
 
