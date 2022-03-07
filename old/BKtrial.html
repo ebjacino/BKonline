@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
   <head>
     <title>My experiment</title>
@@ -11,16 +11,6 @@
   </head>
   <body></body>
   <script>
-
-    function makeHTML(img1,img2){
-      console.log(img1);
-      console.log(img2);
-
-      var htmlout = "<img src=\""+img1+"\" class=\"rotate\" width=\"100\" height=\"100\" /><div style=\"font-size:60px;\">+</div><img src=\""+img2+"\" class=\"rotate\" width=\"100\" height=\"100\" />";
-
-      console.log(htmlout);
-      return htmlout;
-    }
 
     /* create timeline */
     var timeline = [];
@@ -35,10 +25,10 @@
     /* define instructions trial */
     var instructions = {
       type: "html-keyboard-response",
-      stimulus: "<p>In this experiment, a shape will appear in the center " +
-          "of the screen.</p><p>If the shape is most like <strong>sound 1</strong>, " +
+      stimulus: "<p>In this experiment, two shapes will appear side by side in the middle " +
+          "of the screen.</p><p>If the <strong>left<strong> shape is a better match for the sound, " +
           "press the letter F on the keyboard as fast as you can.</p>" +
-          "<p>If the shape is more like <strong>sound 2</strong>, press the letter J " +
+          "<p>If the <strong>right<strong> shape is a better match for the sound, press the letter J " +
           "as fast as you can.</p>" +
           "<div style='width: 100px;'>"+
           "<div style='float: left;'><img src='img/bouba_3_L.png'></img>" +
@@ -52,41 +42,88 @@
     timeline.push(instructions);
 
         /* test trials */
-    var timeline_variables = [
-        {sound: 'sound/teetee.wav', shape1: "img/bouba_3_L.png", shape2: "img/kiki_3_L.png"},
-        {sound: 'sound/keekee.wav', shape1: "img/kiki_3_L.png",  shape2: "img/bouba_3_L.png"},
-    ];
-
-    // var test_stimuli = [
-    //     { stimulus: "img/bouba_3_L.png"},
-    //     { stimulus: "img/kiki_3_L.png"},
-    // ];
-
-    var fixation = {
-        type: 'html-keyboard-response',
-        stimulus: '<div style="font-size:60px;">+</div>',
-        choices: jsPsych.NO_KEYS,
-        trial_duration: 1000,
+    var fixation_cross = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000
     }
 
-    var test = {
-        type: "image-keyboard-response",
-        stimulus: jsPsych.timelineVariable('shape1'),
-        choices: ['f', 'j']
+    var audio_image_1 = {
+      type: 'audio-keyboard-response',
+      stimulus: 'sound/up2.wav',
+      choices: jsPsych.NO_KEYS,
+      prompt: function () {
+        var html = "<div class=wrapper><img src=" + jsPsych.timelineVariable('shape1') + " class=zoom class=box width=100 height=100 /><div style=font-size:60px;>+</div><img src=" + jsPsych.timelineVariable('shape2') + " class=zoom class=box width=100 height=100/></div>";
+        return html;
+      },
+      trial_duration: 2000,
     }
 
-    var audio = {
-            type: 'audio-keyboard-response', 
-            stimulus: 'sound/teetee.wav',  
-            choices: jsPsych.NO_KEYS,
-            prompt: makeHTML(jsPsych.timelineVariable('shape1',true),
-                             jsPsych.timelineVariable('shape2',true)),
-            trial_duration: 1000,
+    var audio_image_2 = {
+      type: 'audio-keyboard-response',
+      stimulus: jsPsych.timelineVariable('sound'),
+      choices: ['f', 'j'],
+      prompt: function () {
+        var html = "<div class=wrapper><img src=" + jsPsych.timelineVariable('shape1') + " class=box width=100 height=100 /><div style=font-size:60px;>+</div><img src=" + jsPsych.timelineVariable('shape2') + " class=box width=100 height=100/></div>";
+        return html;
+      }
+    }
+
+    var conditional_audio_image_1 = {
+      timeline: [
+        {
+          type: 'audio-keyboard-response',
+          stimulus: 'sound/go.wav',
+          choices: jsPsych.NO_KEYS,
+          prompt: function () {
+            var html = "<div class=wrapper><img src=" + jsPsych.timelineVariable('shape1') + " class=rotate class=box width=100 height=100 /><div style=font-size:60px;>+</div><img src=" + jsPsych.timelineVariable('shape2') + " class=box width=100 height=100/></div>";
+            return html;
+          },
+          trial_duration: 1000,
+        }],
+      conditional_function: function () {
+        // get the data from the previous trial,
+        // and check which key was pressed
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (jsPsych.pluginAPI.compareKeys(data.response, 'f')) {
+          return true;
+        } else {
+          return false;
         }
+      }
+    }
+
+    var conditional_audio_image_2 = {
+      timeline: [
+        {
+          type: 'audio-keyboard-response',
+          stimulus: 'sound/go.wav',
+          choices: jsPsych.NO_KEYS,
+          prompt: function () {
+            var html = "<div class=wrapper><img src=" + jsPsych.timelineVariable('shape1') + " class=box width=100 height=100 /><div style=font-size:60px;>+</div><img src=" + jsPsych.timelineVariable('shape2') + " class=rotate class=box width=100 height=100/></div>";
+            return html;
+          },
+          trial_duration: 1000,
+        }],
+      conditional_function: function () {
+        // get the data from the previous trial,
+        // and check which key was pressed
+        var data = jsPsych.data.get().last(1).values()[0];
+        if (jsPsych.pluginAPI.compareKeys(data.response, 'j')) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
 
     var test_procedure = {
-        timeline: [fixation, audio, test],
-        timeline_variables: timeline_variables
+      timeline: [fixation_cross, audio_image_1, audio_image_2, conditional_audio_image_1, conditional_audio_image_2],
+      timeline_variables: [
+        { sound: 'sound/teetee.wav', shape1: "img/bouba_3_L.png", shape2: "img/kiki_3_L.png" },
+        { sound: 'sound/keekee.wav', shape1: "img/kiki_3_L.png", shape2: "img/bouba_3_L.png" }
+      ]
     }
 
     // var test_procedure = {
@@ -104,4 +141,4 @@
     });
 
   </script>
-  </html>
+  </html> 
