@@ -4,9 +4,11 @@
     <title>My experiment</title>
     <script src="jspsych-6.3.0/jspsych.js"></script>
     <script src="jspsych-6.3.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.3.0/plugins/jspsych-html-button-response.js"></script>
     <script src="jspsych-6.3.0/plugins/bouba-kiki.js"></script>
     <script src="jspsych-6.3.0/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.3.0/plugins/jspsych-audio-keyboard-response.js"></script>
+    <script src="jspsych-6.3.0/plugins/jspsych-preload.js"></script>
     <link href="jspsych-6.3.0/css/jspsych.css" rel="stylesheet" type="text/css">
     <link href="rotate.css" rel="stylesheet" type="text/css">
   </head>
@@ -15,61 +17,20 @@
 
 
 /* //create timeline
-var timeline = [];
 
-var welcome = {
-      type: "html-keyboard-response",
-      stimulus: "Welcome to the experiment. Press any key to begin."
+    */
+  // manually preload these files, since not on standard jspsych preload
+  var audio = ['sound2/up2.wav'];
+    
+  var preload = {
+      type: 'preload',
+      auto_preload: true,  // automatic preload of stimulus files
+      audio: audio,  // manual preload of other files
+      images: ["img/bouba_7_L.png","img/bouba_7_L_R.png","img/bouba_7_S_R.png","img/bouba_7_S.png","img/kiki_7_L.png","img/kiki_7_L_R.png","img/kiki_7_S_R.png","img/kiki_7_S.png"]
     };
 
-var stimulus = {
-    stimulus: 'PracSounds/1.wav',imageLeft:'PracImgs/1.png',imageRight:"PracImgs/2.png"
-}
 
-
-var trial = {
-    type: 'bouba-kiki',
-    upsound: 'sound/up2.wav',
-
-    stimulus: jsPsych.timelineVariable('stimulus'),
-    image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
-    data: {
-      width: w,
-      height: h,
-      left_image: [jsPsych.timelineVariable('imageLeft')],
-      right_image: [jsPsych.timelineVariable('imageRight')],
-      
-    },
-    on_finish: function(data) {
-        // at the end of each trial, update the progress bar
-        // based on the current value and the proportion to update for each trial
-        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
-        jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
-        
-        // End experiment and save the progress 
-         if(jsPsych.pluginAPI.compareKeys(data.response, "escape")){
-      jsPsych.endExperiment('The experiment was ended by pressing "escape".');
-         }
-    }
-  };
-
-
-  timeline.push(welcome);
-  timeline.push(trial);
-
-  jsPsych.init({
-      timeline: timeline,
-      preload_audio: ['PracSounds/1.wav'],
-      preload_images: ['PracImgs/1.png', 'PracImgs/2.png'],
-      on_finish: function(){
-        jsPsych.data.displayData();
-      }
-    }); 
-    */
-
-
-
-
+var timeline = [];
 var PracArray = []
 var combo_array = []
 var trial_block = []
@@ -135,7 +96,7 @@ while (bouba_three_in_row) {
                                                                         });
         all_equal = to_read.every( v => v.includes("bouba")) || to_read.every( v => v.includes("kiki"));
             
-            console.log(to_read)
+            //console.log(to_read)
             //only if it has seen 2 in a row will this make three_in_row equal true, which makes the loop run again until it gets it right
         if(all_equal){
             bouba_three_in_row = true;
@@ -144,8 +105,12 @@ while (bouba_three_in_row) {
 };    
 
 for (let i = 0; i<combo_array.length; i++){
-    trial_block.push([soundArr[i], combo_array[i][0], combo_array[i][1]]);
+    //trial_block.push([soundArr[i], combo_array[i][0], combo_array[i][1]]);
+    trial_block.push({ stimulus: soundArr[i], imageLeft:combo_array[i][0], imageRight:combo_array[i][1]})
 };
+
+var leftButton = "z";
+var rightButton = "m";
 
 console.log(trial_block);
 console.log(combo_array);
@@ -155,33 +120,39 @@ console.log(combo_array[i][0]);
 console.log(combo_array[i][1]);
 
 //READY UP
-// var ready = {
-//   type: "html-button-response",
-//   stimulus: '<div style="max-width:600px;"><p>Ready to begin? Press Continue to begin the trials.</p>',
-//   choices: ['Continue'],
-// };
-// timeline.push(ready);
+var ready = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>Ready to begin? Press Continue to begin the trials.</p>',
+  choices: ['Continue'],
+};
+timeline.push(ready);
 
-// var trial = {
-//       type: 'bouba-kiki',
-//       upsound: 'sound/up2.wav',
-  
-//       stimulus: jsPsych.timelineVariable('stimulus'),
-//       image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
-//       data: {
-//         width: w,
-//         height: h,
-//         left_image: [jsPsych.timelineVariable('imageLeft')],
-//         right_image: [jsPsych.timelineVariable('imageRight')],
-//         correct_response: jsPsych.timelineVariable('correct_response'),
-//       }
-//     }
+var trial = {
+      type: 'bouba-kiki',
+      upsound: 'sound2/up2.wav',
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+      data: {
+        left_image: [jsPsych.timelineVariable('imageLeft')],
+        right_image: [jsPsych.timelineVariable('imageRight')],
+      }
+    }
 
-// var test_procedure = {
-//       timeline: [trial],
-//       timeline_variables: trial_block,
-//     };
+var test_procedure = {
+      timeline: [trial],
+      timeline_variables: trial_block,
+    };
 
+timeline.push(test_procedure);
+
+    jsPsych.init({
+      timeline: timeline,
+    //   preload_audio: ['PracSounds/1.wav'],
+    //   preload_images: ['PracImgs/1.png', 'PracImgs/2.png'],
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    }); 
 
 
 
