@@ -119,7 +119,66 @@ for (let i = 0; i<combo_array.length; i++){
     trial_block.push({ stimulus: large_soundArr[i], imageLeft:combo_array[i][0], imageRight:combo_array[i][1]})
 };
 
-console.log(trial_block)
+console.log(trial_block);
+
+//INSTRUCTIONS
+var instruction = {
+    type: 'html-button-response',
+    stimulus: '<div style="max-width:600px;"><p>Instruction:</p> <p>Great job, you have finished the practice trials! Now for the experiment. <p> You will now see 2 abstract objects and hear an abstract sound. You need to pick the object that best matches the sound. Press the key on the same side as the matching shape. </p> <p>Press Z for shapes on the left and M for shapes on the right. </p> <p>If you take too long, the trial will end and you will start the next trial. Press "esc" to leave the study at any time. </p></div>',
+    choices: ['Continue'],
+   on_start: function() {
+        // set progress bar to 0 at the start of experiment
+       jsPsych.setProgressBar(0);
+   }
+  };
+timeline.push(instruction);
+
+//READY UP
+var ready = {
+  type: "html-button-response",
+  stimulus: '<div style="max-width:600px;"><p>Ready to begin? Press Continue to begin the trials.</p>',
+  choices: ['Continue'],
+};
+timeline.push(ready);
+
+//TEST TRIAL
+var trial = {
+      type: 'bouba-kiki',
+      upsound: 'sound2/up2.wav',
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      image:[jsPsych.timelineVariable('imageLeft'),jsPsych.timelineVariable('imageRight')],
+      data: {
+        left_image: [jsPsych.timelineVariable('imageLeft')],
+        right_image: [jsPsych.timelineVariable('imageRight')],
+      },
+      on_finish: function() {
+        // at the end of each trial, update the progress bar
+        // based on the current value and the proportion to update for each trial
+        var curr_progress_bar_value = jsPsych.getProgressBarCompleted();
+        jsPsych.setProgressBar(curr_progress_bar_value + (1/n_trials));
+        }
+    }
+
+var n_trials = 64;
+
+
+var test_procedure = {
+      timeline: [trial],
+      timeline_variables: trial_block,
+    };
+
+timeline.push(test_procedure);
+
+    jsPsych.init({
+      timeline: timeline,
+      show_progress_bar: true,
+      auto_update_progress_bar: false,
+       preload_audio: ["sound/lili.wav","sound/titi.wav","sound/didi.wav","sound/sisi.wav","sound/kiki.wav","sound/mimi.wav","sound/zizi.wav","sound/fifi.wav","sound/DADA.wav","sound/KAKA.wav","sound/SASA.wav","sound/MAMA.wav","sound/ZAZA.wav","sound/FAFA.wav","sound/LALA.wav","sound/TATA.wav"],
+    //   preload_images: ['PracImgs/1.png', 'PracImgs/2.png'],
+      on_finish: function(){
+        jsPsych.data.displayData();
+      }
+    }); 
 
 
   </script>
