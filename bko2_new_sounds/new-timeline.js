@@ -4,7 +4,7 @@ function new_timeline() {
 
   var PracArray = [];
   var imageArr = ["PracImgs/1.png","PracImgs/2.png","PracImgs/3.png","PracImgs/4.png","PracImgs/5.png","PracImgs/6.png","PracImgs/7.png","PracImgs/8.png"];
-  var soundArr = ["PracSounds/1.wav","PracSounds/2.wav","PracSounds/3.wav","PracSounds/4.wav","PracSounds/5.wav","PracSounds/6.wav","PracSounds/7.wav","PracSounds/8.wav"];
+  var Prac_Prac_soundArr = ["PracSounds/1.wav","PracSounds/2.wav","PracSounds/3.wav","PracSounds/4.wav","PracSounds/5.wav","PracSounds/6.wav","PracSounds/7.wav","PracSounds/8.wav"];
   
   var NumArr = [0,1,2,3,4,5,6,7];
   
@@ -20,10 +20,10 @@ function new_timeline() {
           //If it is less than 3 long just add randomly
         if (PracArray.length < 3){
           if (Math.random() > 0.5){
-            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+            PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
           }
           else{
-            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+            PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
           }
         }
         //If there are 3 or more entries already make sure the last 3 are not the same.
@@ -41,19 +41,19 @@ function new_timeline() {
 
           //If they are all the same and right make the next one left 
           if(all_equal && lastThreeCorrect[0] == rightButton){
-            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+            PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
           }
           //If they are all the same and left make the next one right 
           else if(all_equal && lastThreeCorrect[0] == leftButton){
-            PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+            PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
           }
           //Otherwise select randomly
           else{
             if (Math.random() > 0.5){
-              PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
+              PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num1], imageRight:imageArr[num2], correct_response:leftButton})
             }
             else{
-              PracArray.push({ stimulus: soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
+              PracArray.push({ stimulus: Prac_soundArr[num1], imageLeft:imageArr[num2], imageRight:imageArr[num1], correct_response:rightButton})
             }
           }
         }

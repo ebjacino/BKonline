@@ -47,6 +47,12 @@ var reading_frame = 3
 var bouba_three_in_row = true
 var three_in_row = true
 
+//PRACTICE TRIALS/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//CREATING EXPERIMENTAL ARRAYS///////////////////////////////////////////////////////////////////////////
 for(let x = 0; x<4; x++){
     //generating an array called combo_array with visual stimuli, B shape on one side and K shape on the other
     for (let i = 0; i<boubaArr_L.length; i++){
@@ -59,8 +65,6 @@ for(let x = 0; x<4; x++){
         }
     };
 }
-
-console.log(combo_array);
 
 while (bouba_three_in_row) {
         var combo_array = jsPsych.randomization.sampleWithoutReplacement(combo_array, combo_array.length);
@@ -141,7 +145,7 @@ var ready = {
 };
 timeline.push(ready);
 
-//TEST TRIAL
+//TEST TRIALS//////////////////////////////////////////////////////////////////////////////////
 var trial = {
       type: 'bouba-kiki',
       upsound: 'sound2/up2.wav',
