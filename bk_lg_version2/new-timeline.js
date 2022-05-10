@@ -428,9 +428,11 @@ timeline.push(ready);
 //TRANSITION TO EXPERIMENT TRIALS
     var pairs_rand = [];
     var targ_orig = [
+    "targets/1_confound.png","targets/1_R_confound.png","targets/2_confound.png","targets/2_R_confound.png","targets/3_confound.png","targets/3_R_confound.png","targets/4_confound.png","targets/4_R_confound.png",
     "targets/1.png","targets/1_R.png","targets/2.png","targets/2_R.png","targets/3.png","targets/3_R.png","targets/4.png","targets/4_R.png","targets/5.png","targets/5_R.png","targets/6.png","targets/6_R.png",
     "targets/7.png","targets/7_R.png","targets/8.png","targets/8_R.png","targets/9.png","targets/9_R.png","targets/10.png","targets/10_R.png","targets/11.png","targets/11_R.png","targets/12.png","targets/12_R.png"];
     var pairs_orig = [
+    "pairs/3.png", "pairs/3_R.png","pairs/4.png", "pairs/4_R.png", "pairs/3.png", "pairs/3_R.png","pairs/4.png", "pairs/4_R.png",
     "pairs/1.png","pairs/1_R.png","pairs/2.png","pairs/2_R.png","pairs/1.png", "pairs/1_R.png","pairs/2.png", "pairs/2_R.png","pairs/1.png", "pairs/1_R.png","pairs/2.png", "pairs/2_R.png",
     "pairs/1.png", "pairs/1_R.png","pairs/2.png", "pairs/2_R.png","pairs/3.png", "pairs/3_R.png","pairs/4.png", "pairs/4_R.png","pairs/3.png", "pairs/3_R.png","pairs/4.png", "pairs/4_R.png"];
 
@@ -455,7 +457,7 @@ timeline.push(ready);
         test_stimuli.push( {targ_img: targ_rand[i], pair_img: pairs_rand[i]});
     }
 
-
+console.log(test_stimuli);
 //TRIAL
     var LGfixation = {
         type: 'image-keyboard-response',
@@ -464,7 +466,7 @@ timeline.push(ready);
         trial_duration: 1000
      };
 
-    var n_trials = 24;
+    var n_trials = 32;
 
     var LGtest_targ = {
       type: "image-keyboard-response",
