@@ -53,7 +53,7 @@ var three_in_row = true
 
 
 //CREATING EXPERIMENTAL ARRAYS///////////////////////////////////////////////////////////////////////////
-for(let x = 0; x<4; x++){
+for(let x = 0; x<2; x++){
     //generating an array called combo_array with visual stimuli, B shape on one side and K shape on the other
     for (let i = 0; i<boubaArr_L.length; i++){
         var boubaArr_L = jsPsych.randomization.sampleWithoutReplacement(boubaArr_L, boubaArr_L.length);
@@ -88,7 +88,7 @@ while (bouba_three_in_row) {
 
 console.log(combo_array);
 
-for(j=0; j<4; j++){
+for(j=0; j<2; j++){
     for(i = 0; i<soundArr.length; i++){
         large_soundArr.push(soundArr[i])
     }
